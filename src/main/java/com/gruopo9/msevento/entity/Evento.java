@@ -2,10 +2,12 @@ package com.gruopo9.msevento.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Table(name = "eventos")
@@ -37,5 +39,10 @@ public class Evento {
 
     @Column(name = "usuario_actualizacion", length = 255)
     private String usuarioActualizacion;
+
+    @PrePersist
+    public void setfechaCreacion(){
+        this.fechaCreacion=new Timestamp(new Date().getTime());
+    }
 }
 
