@@ -1,20 +1,20 @@
 package com.gruopo9.msevento.service;
 
-import com.gruopo9.msevento.entity.Evento;
+import com.gruopo9.msevento.entity.Asiento;
 import com.gruopo9.msevento.response.ResponseBase;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
 
-public interface EventoService {
-    ResponseBase save(Evento evento);
-    //Evento findEventoByTituloWithSectorAndAsientos(@Param("titulo") String titulo);
+public interface AsientoService {
+    Asiento save(Asiento asiento);
 
 
-    List<Evento> listaEvento();
+    ResponseBase actualizarAsiento(Long id, Asiento asientoRequest);
+    List<Asiento> obtenertodoEvento();
 
-    Evento findById(Long id);
+    Asiento findById(Long id);
 
     ResponseEntity<String> actualizar(Long id, Map<String, String> requestMap);
 
