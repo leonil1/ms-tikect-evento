@@ -63,20 +63,31 @@ public class EventoSericeImpl implements EventoService {
         return eventoRepository.findAll();
     }
 
-    @Override
-    public Evento findById(Long id) {
-        try {
-            Evento evento = eventoRepository.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Evento no encontrado"));
-            return evento;
-        } catch (EntityNotFoundException e) {
-            // Manejar la excepción de entidad no encontrada
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        } catch (Exception e) {
-            // Manejar cualquier otra excepción
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al buscar el evento", e);
-        }
+//    @Override
+//    public Optional<Evento> findById(Long id) {
+//        try {
+//            Evento evento = eventoRepository.findById(id)
+//                    .orElseThrow(() -> new EntityNotFoundException("Evento no encontrado"));
+//            return evento;
+//        } catch (EntityNotFoundException e) {
+//            // Manejar la excepción de entidad no encontrada
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+//        } catch (Exception e) {
+//            // Manejar cualquier otra excepción
+//            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al buscar el evento", e);
+//        }
+//    }
+@Override
+public Optional<Evento> findById(Long id) {
+    try {
+        return eventoRepository.findById(id);
+    } catch (Exception e) {
+        // Manejar cualquier excepción que ocurra durante la búsqueda
+        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al buscar el evento", e);
     }
+}
+
+
 
     //  @Override
 //    public Evento findById(Long id) {

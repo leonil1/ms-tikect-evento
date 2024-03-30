@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface EventoService {
     ResponseBase save(Evento evento);
@@ -14,7 +15,7 @@ public interface EventoService {
 
     List<Evento> listaEvento();
 
-    Evento findById(Long id);
+    Optional<Evento> findById(Long id);
 
     ResponseEntity<String> actualizar(Long id, Map<String, String> requestMap);
 

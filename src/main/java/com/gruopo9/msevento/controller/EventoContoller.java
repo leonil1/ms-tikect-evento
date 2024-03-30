@@ -2,6 +2,7 @@ package com.gruopo9.msevento.controller;
 
 import com.gruopo9.msevento.entity.Asiento;
 import com.gruopo9.msevento.entity.Evento;
+import com.gruopo9.msevento.entity.SectorAsiento;
 import com.gruopo9.msevento.response.ResponseBase;
 import com.gruopo9.msevento.service.AsientoService;
 import com.gruopo9.msevento.service.EventoService;
@@ -28,6 +29,61 @@ public class EventoContoller {
     //private final AsientoService asientoService;
     private final UploadService uploadService;
 
+    private final AsientoService asientoService;
+
+
+
+
+    @PutMapping("/asiento/{id}/estado")
+    public ResponseEntity<ResponseBase> cambiarEstadoAsiento(@PathVariable Long id, @RequestParam int numeroAsiento, @RequestParam boolean estado) {
+        try {
+            Optional<Evento> optionalEvento = eventoService.findById(id);
+            if (optionalEvento.isPresent()) {
+                Evento evento = optionalEvento.get();
+                List<SectorAsiento> sectores = evento.getSector();
+                for (SectorAsiento sector : sectores) {
+                    List<Asiento> asientos = sector.getAsientos();
+                    for (Asiento asiento : asientos) {
+                        if (asiento.getNumeroAsiento() == numeroAsiento) {
+                            asiento.setEstado(estado);
+                            asientoService.save(asiento);
+                            return ResponseEntity.ok(ResponseBase.exitoso("Estado de asiento actualizado", asiento));
+                        }
+                    }
+                }
+            }
+            return ResponseEntity.ok(ResponseBase.exitoso("Asiento no encontrado", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ResponseBase.error("Error al cambiar estado de asiento", HttpStatus.INTERNAL_SERVER_ERROR));
+        }
+    }
+
+
+    @PutMapping("/asiento/form/{id}")
+    public ResponseEntity<ResponseBase> create(@PathVariable Long id,@RequestBody Asiento asiento) {
+        ResponseBase response = asientoService.actualizarAsiento(id,asiento);
+        return ResponseEntity.status(response.getCode()).body(response);
+
+    }
+
+
+
+//    public ResponseEntity<ResponseBase> cambiarEstadoAsiento(@PathVariable Long id, @RequestParam boolean estado) {
+//        Asiento asiento = asientoService.findById(id);
+//        if (asiento == null) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body(ResponseBase.error("Asiento no encontrado con el ID: " + id, HttpStatus.NOT_FOUND));
+//        }
+//
+//        asiento.setEstado(estado);
+//        asientoService.save(asiento);
+//
+//        return ResponseEntity.ok().body(ResponseBase.exitoso("Estado del asiento cambiado correctamente", asiento.getId()));
+//    }
+
+
+
 
 //    @PostMapping("/form")
 //    public ResponseEntity<ResponseBase> create(@RequestBody Evento evento) {
@@ -35,7 +91,7 @@ public class EventoContoller {
 //    }
 
     @PostMapping("/form")
-    public ResponseEntity<ResponseBase> create(@RequestBody Evento evento) {
+    public ResponseEntity<ResponseBase> createASiento(@RequestBody Evento evento) {
         ResponseBase response = eventoService.save(evento);
         return ResponseEntity.status(response.getCode()).body(response);
 
@@ -49,7 +105,7 @@ public class EventoContoller {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<ResponseBase> deleteId(@PathVariable Long id) {
-        Evento evento = eventoService.findById(id);
+        Optional<Evento> evento = eventoService.findById(id);
         if (evento == null) {
             // Event not found, return error 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -63,7 +119,7 @@ public class EventoContoller {
     @GetMapping("/obtener/{id}")
     public ResponseEntity<ResponseBase> obtenerEvento(@PathVariable Long id) {
         try {
-            Evento evento = eventoService.findById(id);
+            Optional<Evento> evento = eventoService.findById(id);
             return ResponseEntity.ok(ResponseBase.exitoso("Evento encontrado", evento));
         } catch (ResponseStatusException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -86,30 +142,30 @@ public class EventoContoller {
 //        }
 //    }
 
-    @PostMapping("/upload")
-    public ResponseEntity<ResponseBase> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") Long id) {
-        Evento evento = eventoService.findById(id);
-        if (!archivo.isEmpty()) {
-            String nombreArchivo = null;
-            try {
-                nombreArchivo = uploadService.copiar(archivo);
-            } catch (IOException e) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseBase.error("Error al subir la imagen del cliente", HttpStatus.INTERNAL_SERVER_ERROR));
-            }
-
-            String nombreFotoAnterior = evento.getImagen();
-
-            uploadService.eliminar(nombreFotoAnterior);
-
-            evento.setImagen(nombreArchivo);
-
-            eventoService.save(evento);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(ResponseBase.exitoso("Has subido correctamente la imagen: " + nombreArchivo, Optional.of(evento)));
-        }
-
-        return ResponseEntity.badRequest().body(ResponseBase.error("El archivo está vacío", HttpStatus.BAD_REQUEST));
-    }
+//    @PostMapping("/upload")
+//    public ResponseEntity<ResponseBase> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") Long id) {
+//        Optional<Evento> evento = eventoService.findById(id);
+//        if (!archivo.isEmpty()) {
+//            String nombreArchivo = null;
+//            try {
+//                nombreArchivo = uploadService.copiar(archivo);
+//            } catch (IOException e) {
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ResponseBase.error("Error al subir la imagen del cliente", HttpStatus.INTERNAL_SERVER_ERROR));
+//            }
+//
+//            String nombreFotoAnterior = evento.getImagen();
+//
+//            uploadService.eliminar(nombreFotoAnterior);
+//
+//            evento.setImagen(nombreArchivo);
+//
+//            eventoService.save(evento);
+//
+//            return ResponseEntity.status(HttpStatus.CREATED).body(ResponseBase.exitoso("Has subido correctamente la imagen: " + nombreArchivo, Optional.of(evento)));
+//        }
+//
+//        return ResponseEntity.badRequest().body(ResponseBase.error("El archivo está vacío", HttpStatus.BAD_REQUEST));
+//    }
 
 
 
