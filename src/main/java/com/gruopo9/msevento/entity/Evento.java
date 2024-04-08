@@ -2,17 +2,13 @@ package com.gruopo9.msevento.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -34,19 +30,10 @@ public class Evento  implements Serializable {
     @Column(name = "evento_id")
     private Long id;
 
-
-
-//    @NotEmpty(message = "El titulo de evento no puede ser vacío")
-//    @Size( min = 4 , max = 255, message = "El tamaño del número de documento es 8")
-//    @Column(name = "titulo", nullable = false, length = 255)
-//    private String titulo;
-
     @NotEmpty(message = "El título de evento no puede ser vacío")
     @Size(min = 4, max = 255, message = "El tamaño del título debe estar entre 4 y 255 caracteres")
     @Column(name = "titulo", nullable = false, length = 255)
     private String titulo;
-
-
 
     @NotEmpty(message = "La descripcion de evento no puede ser vacío")
     @Size( min = 4 , max = 255, message = "El tamaño debe ser entre 4 y 255")
@@ -71,16 +58,17 @@ public class Evento  implements Serializable {
 
     private String imagen;
 
-
     @Column(name = "activo",columnDefinition = "boolean default true")
     private boolean activo;
-
 
     @Column(name = "fecha_creacion")
     private Timestamp fechaCreacion;
 
     @Column(name = "fecha_actualizacion")
     private Timestamp fechaActualizacion;
+
+    @Column(name = "usuario_creador", length = 255)
+    private String usuarioCreador;
 
     @Column(name = "usuario_actualizacion", length = 255)
     private String usuarioActualizacion;
@@ -91,22 +79,13 @@ public class Evento  implements Serializable {
     @JoinColumn(name = "evento_id")
     private List<SectorAsiento> sector;
 
-
     public Evento() {
         sector = new ArrayList<>();
     }
 
-
     @PrePersist
     public void setfechaCreacion(){
-        // fechaCreacion=new Date;
-
 
         this.fechaCreacion=new Timestamp(new Date().getTime());
     }
-
-
-//    public void inicializarCapacidadEvento() {
-//        this.capacidadEvento = sector.stream().mapToInt(SectorAsiento::getCapacidad).sum();
-//    }
 }

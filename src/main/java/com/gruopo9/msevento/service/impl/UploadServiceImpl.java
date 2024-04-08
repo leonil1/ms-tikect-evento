@@ -23,14 +23,12 @@ public class UploadServiceImpl implements UploadService {
     public Resource cargar(String nombreFoto) throws MalformedURLException {
         Path rutaArchivo = getPath(nombreFoto);
 
-
         Resource recurso = new UrlResource(rutaArchivo.toUri());
 
         if(!recurso.exists() && !recurso.isReadable()) {
             rutaArchivo = Paths.get("src/main/resources/static/images").resolve("no-usuario.png").toAbsolutePath();
 
             recurso = new UrlResource(rutaArchivo.toUri());
-
 
         }
         return recurso;

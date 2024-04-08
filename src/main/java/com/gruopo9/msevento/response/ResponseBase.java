@@ -17,9 +17,6 @@ public class ResponseBase implements Serializable {
     private Boolean estado;
     private Optional data;
 
-    //    public static ResponseBase exitoso(String mensaje, Optional data) {
-//        return new ResponseBase(HttpStatus.OK.value(), mensaje, true, data);
-//    }
     public static <T> ResponseBase exitoso(String mensaje, T data) {
         return new ResponseBase(HttpStatus.OK.value(), mensaje, true, Optional.ofNullable(data));
     }

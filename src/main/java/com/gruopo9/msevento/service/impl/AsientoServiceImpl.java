@@ -41,8 +41,6 @@ public class AsientoServiceImpl implements AsientoService {
         }
     }
 
-
-
     @Override
     public List<Asiento> obtenertodoEvento() {
         return null;

@@ -1,6 +1,5 @@
 package com.gruopo9.msevento.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -43,8 +42,5 @@ public class SectorAsiento implements Serializable {
     public void inicializarCapacidad() {
         this.capacidad = asientos.size();
     }
-
-
-
 
 }

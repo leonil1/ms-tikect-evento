@@ -10,10 +10,8 @@ import java.util.Map;
 public interface AsientoService {
     Asiento save(Asiento asiento);
 
-
     ResponseBase actualizarAsiento(Long id, Asiento asientoRequest);
     List<Asiento> obtenertodoEvento();
-
     Asiento findById(Long id);
 
     ResponseEntity<String> actualizar(Long id, Map<String, String> requestMap);

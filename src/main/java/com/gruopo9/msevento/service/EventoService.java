@@ -9,15 +9,13 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface EventoService {
-    ResponseBase save(Evento evento);
-    //Evento findEventoByTituloWithSectorAndAsientos(@Param("titulo") String titulo);
-
+    ResponseBase save(Evento evento );
 
     List<Evento> listaEvento();
 
     Optional<Evento> findById(Long id);
 
-    ResponseEntity<String> actualizar(Long id, Map<String, String> requestMap);
+    ResponseBase actualizar(Long id, Evento evento);
 
     void deleteById(Long id);
 }

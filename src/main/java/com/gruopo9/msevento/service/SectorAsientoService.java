@@ -8,9 +8,7 @@ import java.util.Map;
 
 public interface SectorAsientoService {
     ResponseEntity<String> crearEvento(Map<String,String> requestMap);
-
     SectorAsiento save(SectorAsiento sectorAsiento);
-
     List<SectorAsiento> obtenertodoEvento();
 
     SectorAsiento findById(Long id);
