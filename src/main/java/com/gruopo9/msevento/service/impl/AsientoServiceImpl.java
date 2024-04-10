@@ -1,8 +1,8 @@
 package com.gruopo9.msevento.service.impl;
 
-import com.gruopo9.msevento.entity.Asiento;
+import com.gruopo9.msevento.entity.AsientoEntity;
 import com.gruopo9.msevento.repository.AsientoRepository;
-import com.gruopo9.msevento.response.ResponseBase;
+import com.gruopo9.msevento.aggregates.response.ResponseBase;
 import com.gruopo9.msevento.service.AsientoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,36 +18,36 @@ import java.util.Optional;
 public class AsientoServiceImpl implements AsientoService {
     private final AsientoRepository asientoRepository;
     @Override
-    public Asiento save(Asiento asiento) {
+    public AsientoEntity save(AsientoEntity asiento) {
 
         return asientoRepository.save(asiento);
     }
 
     @Override
-    public ResponseBase actualizarAsiento(Long id, Asiento asientoR) {
+    public ResponseBase actualizarAsiento(Long id, AsientoEntity asientoR) {
         try {
-            Optional<Asiento> optionalAsiento = asientoRepository.findById(id);
+            Optional<AsientoEntity> optionalAsiento = asientoRepository.findById(id);
             if (optionalAsiento.isPresent()) {
-                Asiento asiento = optionalAsiento.get();
+                AsientoEntity asiento = optionalAsiento.get();
                 asiento.setEstado(asientoR.isEstado());
                 // Actualiza otros campos según sea necesario
                 asientoRepository.save(asiento);
                 return ResponseBase.exitoso("Asiento actualizado correctamente", Optional.of(asiento.getId()));
             } else {
-                return ResponseBase.error("El asiento con ID " + id + " no se encontró", HttpStatus.NOT_FOUND);
+                return ResponseBase.errorNotFound("El asiento con ID " + id + " no se encontró");
             }
         } catch (Exception e) {
-            return ResponseBase.error("Error al procesar la solicitud", HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseBase.errorInternalSErverError("Error al procesar la solicitud");
         }
     }
 
     @Override
-    public List<Asiento> obtenertodoEvento() {
+    public List<AsientoEntity> obtenertodoEvento() {
         return null;
     }
 
     @Override
-    public Asiento findById(Long id) {
+    public AsientoEntity findById(Long id) {
         return null;
     }
 

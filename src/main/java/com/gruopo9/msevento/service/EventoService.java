@@ -1,21 +1,20 @@
 package com.gruopo9.msevento.service;
 
-import com.gruopo9.msevento.entity.Evento;
-import com.gruopo9.msevento.response.ResponseBase;
-import org.springframework.http.ResponseEntity;
+import com.gruopo9.msevento.entity.EventoEntity;
+import com.gruopo9.msevento.aggregates.response.ResponseBase;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface EventoService {
-    ResponseBase save(Evento evento );
+    ResponseBase save(EventoEntity evento );
 
-    List<Evento> listaEvento();
+    List<EventoEntity> listaEvento();
 
-    Optional<Evento> findById(Long id);
+    Optional<EventoEntity> findById(Long id);
+    //ResponseBase<EventoEntity> findById(Long id);
 
-    ResponseBase actualizar(Long id, Evento evento);
+    ResponseBase update(Long id, EventoEntity eventoActualizado);
 
     void deleteById(Long id);
 }

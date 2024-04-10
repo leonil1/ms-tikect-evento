@@ -3,6 +3,7 @@ package com.gruopo9.msevento.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.gruopo9.msevento.entity.common.Audit;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +13,6 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -24,10 +24,9 @@ import java.util.List;
 @Table(name = "eventos")
 @Getter
 @Setter
-public class Evento  implements Serializable {
+public class EventoEntity extends Audit implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "evento_id")
     private Long id;
 
     @NotEmpty(message = "El título de evento no puede ser vacío")
@@ -52,40 +51,38 @@ public class Evento  implements Serializable {
 
 
     @NotEmpty(message = "La duaracion de evento no puede ser vacío")
-    @Size( min = 2 , max = 10, message = "El duracion de evento debe ser entre 2 a 10 caracteres")
+    @Size( min = 4 , max = 10, message = "El duracion de evento debe ser entre 2 a 10 caracteres")
     @Column(name = "duracion_evento",nullable = false)
     private String duracionEvento;
 
+    @NotEmpty(message = "El tipo publico  de evento no puede ser vacío")
+    @Size( min = 2 , max = 10, message = "El tipo publico debe ser entre 2 a 10 caracteres")
+    @Column(name = "tipo_publico",nullable = false)
+    private String tipoPublico;
+
     private String imagen;
 
-    @Column(name = "activo",columnDefinition = "boolean default true")
+    @Column(name = "activo")
     private boolean activo;
 
-    @Column(name = "fecha_creacion")
-    private Timestamp fechaCreacion;
-
-    @Column(name = "fecha_actualizacion")
-    private Timestamp fechaActualizacion;
-
-    @Column(name = "usuario_creador", length = 255)
-    private String usuarioCreador;
-
-    @Column(name = "usuario_actualizacion", length = 255)
-    private String usuarioActualizacion;
+    public EventoEntity(String userCreate, Date dateCreate, String userModif, Date dateModif, String userDelet, Date dateDelet) {
+        super(userCreate, dateCreate, userModif, dateModif, userDelet, dateDelet);
+    }
 
     @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
     @NotNull
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "evento_id")
-    private List<SectorAsiento> sector;
+    private List<SectorAsientoEntity> sector;
 
-    public Evento() {
+    public EventoEntity() {
         sector = new ArrayList<>();
     }
-
     @PrePersist
-    public void setfechaCreacion(){
+    protected void inicializarPorDefecto() {
+        this.activo=true;
+        setDateCreate(new Date());
 
-        this.fechaCreacion=new Timestamp(new Date().getTime());
     }
+
 }

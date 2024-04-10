@@ -1,5 +1,5 @@
 package com.gruopo9.msevento.client;
-import com.gruopo9.msevento.EntityDto.UsuarioDTO;
+import com.gruopo9.msevento.service.dto.UsuarioDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

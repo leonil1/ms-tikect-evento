@@ -1,4 +1,4 @@
-package com.gruopo9.msevento.EntityDto;
+package com.gruopo9.msevento.service.dto;
 
 import lombok.Getter;
 import lombok.Setter;
