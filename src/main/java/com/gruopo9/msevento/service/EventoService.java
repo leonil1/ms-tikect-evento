@@ -9,12 +9,12 @@ import java.util.Optional;
 public interface EventoService {
     ResponseBase save(EventoEntity evento );
 
-    List<EventoEntity> listaEvento();
+    ResponseBase listaEvento();
 
-    Optional<EventoEntity> findById(Long id);
+    Optional<ResponseBase> findById(Long id);
     //ResponseBase<EventoEntity> findById(Long id);
 
     ResponseBase update(Long id, EventoEntity eventoActualizado);
 
-    void deleteById(Long id);
+    Optional<ResponseBase> deleteById(Long id);
 }

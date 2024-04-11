@@ -24,51 +24,75 @@ public class EventoContoller {
     private final AsientoService asientoService;
 
     @PostMapping("/form")
-    public ResponseEntity<ResponseBase> createEvento(@RequestBody EventoEntity evento) {
+    public ResponseBase createEvento(@RequestBody EventoEntity evento) {
         ResponseBase response = eventoService.save(evento);
-        return ResponseEntity.status(response.getCode()).body(response);
+        return response;
     }
 
     @GetMapping("/obtener/{id}")
-    public ResponseEntity<ResponseBase> obtenerEvento(@PathVariable Long id) {
-        try {
-            Optional<EventoEntity> evento = eventoService.findById(id);
-            return ResponseEntity.ok(ResponseBase.exitoso("Evento encontrado", evento));
-        } catch (ResponseStatusException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ResponseBase.errorNotFound("Evento no encontrado"));
+    public ResponseBase obtenerEvento(@PathVariable Long id) {
+        Optional<ResponseBase> evento = eventoService.findById(id);
+
+        if (evento.isPresent()) {
+            return evento.get();
+        } else {
+            return ResponseBase.errorNotFound("Evento no encontrado");
         }
     }
 
     @GetMapping("/todos")
-    public ResponseEntity<ResponseBase> obtenerEvento() {
-        List<EventoEntity> eventos = eventoService.listaEvento();
-        return ResponseEntity.ok(ResponseBase.exitoso("Lista de eventos obtenida con exito", eventos));
+    public ResponseBase obtenerEvento() {
+        return eventoService.listaEvento();
     }
+
+
     @PutMapping("/update/{id}")
     public ResponseBase updateEvento(@PathVariable Long id, @RequestBody EventoEntity evento) {
         return eventoService.update(id, evento);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<ResponseBase> deleteId(@PathVariable Long id) {
-        Optional<EventoEntity> evento = eventoService.findById(id);
-        if (evento == null) {
-            // Event not found, return error 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ResponseBase.errorNotFound("Evento no encontrado"));
+    public ResponseBase deleteId(@PathVariable Long id) {
+        Optional<ResponseBase> response = eventoService.deleteById(id);
+        if (!response.isPresent()) {
+            return ResponseBase.errorNotFound("Evento no encontrado");
         }
-        eventoService.deleteById(id);
-        return ResponseEntity.ok(ResponseBase.exitoso("Evento eliminado con exito", null));
+        return response.get();
     }
+
+
+    //actualizar asiento
+//    @PutMapping("/asiento/{id}/estado")
+//    public ResponseBase cambiarEstadoAsiento(@PathVariable Long id, @RequestParam int numeroAsiento, @RequestParam boolean estado) {
+//        try {
+//            Optional<ResponseBase> optionalEvento = eventoService.findById(id);
+//            if (optionalEvento.isPresent()) {
+//                EventoEntity evento = optionalEvento.get();
+//                List<SectorAsientoEntity> sectores = evento.getSector();
+//                for (SectorAsientoEntity sector : sectores) {
+//                    List<AsientoEntity> asientos = sector.getAsientos();
+//                    for (AsientoEntity asiento : asientos) {
+//                        if (asiento.getNumeroAsiento() == numeroAsiento) {
+//                            asiento.setEstado(estado);
+//                            asientoService.save(asiento);
+//                            return ResponseBase.exitoso("Estado de asiento actualizado", asiento);
+//                        }
+//                    }
+//                }
+//            }
+//            return ResponseBase.errorNotFound("Asiento no encontrado");
+//        } catch (Exception e) {
+//            return ResponseBase.errorInternalSErverError("Error al cambiar estado de asiento");
+//        }
+//    }
 
     //actualizar asiento
     @PutMapping("/asiento/{id}/estado")
-    public ResponseEntity<ResponseBase> cambiarEstadoAsiento(@PathVariable Long id, @RequestParam int numeroAsiento, @RequestParam boolean estado) {
+    public ResponseBase cambiarEstadoAsiento(@PathVariable Long id, @RequestParam int numeroAsiento, @RequestParam boolean estado) {
         try {
-            Optional<EventoEntity> optionalEvento = eventoService.findById(id);
+            Optional<ResponseBase> optionalEvento = eventoService.findById(id);
             if (optionalEvento.isPresent()) {
-                EventoEntity evento = optionalEvento.get();
+                EventoEntity evento = (EventoEntity) optionalEvento.get().getData().orElse(null);
                 List<SectorAsientoEntity> sectores = evento.getSector();
                 for (SectorAsientoEntity sector : sectores) {
                     List<AsientoEntity> asientos = sector.getAsientos();
@@ -76,17 +100,18 @@ public class EventoContoller {
                         if (asiento.getNumeroAsiento() == numeroAsiento) {
                             asiento.setEstado(estado);
                             asientoService.save(asiento);
-                            return ResponseEntity.ok(ResponseBase.exitoso("Estado de asiento actualizado", asiento));
+                            return ResponseBase.exitoso("Estado de asiento actualizado", asiento);
                         }
                     }
                 }
             }
-            return ResponseEntity.ok(ResponseBase.exitoso("Asiento no encontrado", null));
+            return ResponseBase.errorNotFound("Asiento no encontrado");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ResponseBase.errorInternalSErverError("Error al cambiar estado de asiento"));
+            return ResponseBase.errorInternalSErverError("Error al cambiar estado de asiento");
         }
     }
+
+
 
     //obtenet asiento
     @PutMapping("/asiento/form/{id}")

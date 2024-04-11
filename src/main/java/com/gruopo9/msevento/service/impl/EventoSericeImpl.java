@@ -34,6 +34,7 @@ public class EventoSericeImpl implements EventoService {
 
     private final UsuarioClient usuarioClient;
 
+
     @Autowired
     private HttpServletRequest request;
 
@@ -109,31 +110,50 @@ public class EventoSericeImpl implements EventoService {
     }
 
 
-    @Override
-    public List<EventoEntity> listaEvento() {
-        return eventoRepository.findAll();
-    }
+//    @Override
+//    public List<EventoEntity> listaEvento() {
+//        return eventoRepository.findAll();
+//    }
 
     @Override
-    public Optional<EventoEntity> findById(Long id) {
+    public ResponseBase listaEvento() {
         try {
-            return eventoRepository.findById(id);
+            List<EventoEntity> eventos = eventoRepository.findAll();
+            return ResponseBase.exitoso("Lista de eventos obtenida con éxito", eventos);
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error al buscar el evento", e);
+            return ResponseBase.errorInternalSErverError("Error al obtener la lista de eventos");
+        }
+    }
+
+
+    @Override
+    public Optional<ResponseBase> findById(Long id) {
+        try {
+            Optional<EventoEntity> evento = eventoRepository.findById(id);
+            if (evento.isPresent()) {
+                return Optional.of(ResponseBase.exitoso("Evento encontrado", evento.get()));
+            } else {
+                return Optional.of(ResponseBase.errorNotFound("Evento no encontrado"));
+            }
+        } catch (Exception e) {
+            return Optional.of(ResponseBase.errorNotFound("Error al buscar el evento"));
         }
     }
 
 
 
-
-
-
-
-
-
     @Override
-    public void deleteById(Long id) {
-        eventoRepository.deleteById(id);
-
+    public Optional<ResponseBase> deleteById(Long id) {
+        try {
+            Optional<EventoEntity> evento = eventoRepository.findById(id);
+            if (!evento.isPresent()) {
+                return Optional.empty(); // Evento no encontrado
+            }
+            eventoRepository.deleteById(id);
+            return Optional.of(ResponseBase.exitoso("Evento eliminado con éxito", null));
+        } catch (Exception e) {
+            return Optional.of(ResponseBase.errorInternalSErverError("Error al eliminar el evento"));
+        }
     }
+
 }

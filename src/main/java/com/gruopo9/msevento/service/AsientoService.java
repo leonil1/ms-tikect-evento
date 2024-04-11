@@ -14,6 +14,7 @@ public interface AsientoService {
     List<AsientoEntity> obtenertodoEvento();
     AsientoEntity findById(Long id);
 
+
     ResponseEntity<String> actualizar(Long id, Map<String, String> requestMap);
 
     void deleteById(Long id);
