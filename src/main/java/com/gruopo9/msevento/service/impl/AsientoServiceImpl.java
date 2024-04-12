@@ -1,63 +1,44 @@
 package com.gruopo9.msevento.service.impl;
 
 import com.gruopo9.msevento.entity.AsientoEntity;
+import com.gruopo9.msevento.entity.EventoEntity;
+import com.gruopo9.msevento.entity.SectorAsientoEntity;
 import com.gruopo9.msevento.repository.AsientoRepository;
 import com.gruopo9.msevento.aggregates.response.ResponseBase;
+import com.gruopo9.msevento.repository.EventoRepository;
 import com.gruopo9.msevento.service.AsientoService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AsientoServiceImpl implements AsientoService {
     private final AsientoRepository asientoRepository;
-    @Override
-    public AsientoEntity save(AsientoEntity asiento) {
+    private final EventoRepository eventoRepository;
 
-        return asientoRepository.save(asiento);
-    }
-
-    @Override
-    public ResponseBase actualizarAsiento(Long id, AsientoEntity asientoR) {
+    public ResponseBase actualizarAsiento(Long id, int numeroAsiento,boolean estado){
         try {
-            Optional<AsientoEntity> optionalAsiento = asientoRepository.findById(id);
-            if (optionalAsiento.isPresent()) {
-                AsientoEntity asiento = optionalAsiento.get();
-                asiento.setEstado(asientoR.isEstado());
-                // Actualiza otros campos según sea necesario
-                asientoRepository.save(asiento);
-                return ResponseBase.exitoso("Asiento actualizado correctamente", Optional.of(asiento.getId()));
-            } else {
-                return ResponseBase.errorNotFound("El asiento con ID " + id + " no se encontró");
+            Optional<EventoEntity> optionalEvento = eventoRepository.findById(id);
+            if (optionalEvento.isPresent()) {
+                EventoEntity evento = optionalEvento.get();
+                List<SectorAsientoEntity> sectores = evento.getSector();
+                for (SectorAsientoEntity sector : sectores) {
+                    List<AsientoEntity> asientos = sector.getAsientos();
+                    for (AsientoEntity asiento : asientos) {
+                        if (asiento.getNumeroAsiento() == numeroAsiento) {
+                            asiento.setEstado(estado);
+                            asientoRepository.save(asiento);
+                            return ResponseBase.exitoso("Estado de asiento actualizado", asiento);
+                        }
+                    }
+                }
             }
+            return ResponseBase.errorNotFound("Asiento no encontrado");
         } catch (Exception e) {
-            return ResponseBase.errorInternalSErverError("Error al procesar la solicitud");
+            return ResponseBase.errorInternalSErverError("Error al cambiar estado de asiento");
         }
-    }
-
-    @Override
-    public List<AsientoEntity> obtenertodoEvento() {
-        return null;
-    }
-
-    @Override
-    public AsientoEntity findById(Long id) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<String> actualizar(Long id, Map<String, String> requestMap) {
-        return null;
-    }
-
-    @Override
-    public void deleteById(Long id) {
-
     }
 }

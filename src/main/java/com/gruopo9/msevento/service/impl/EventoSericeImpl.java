@@ -123,22 +123,6 @@ public class EventoSericeImpl implements EventoService {
     }
 
 
-//    @Override
-//    public Optional<ResponseBase> findById(Long id) {
-//        try {
-//            Optional<EventoEntity> evento = eventoRepository.findById(id);
-//            if (evento.isPresent()) {
-//                return Optional.of(ResponseBase.exitoso("Evento encontrado", evento.get()));
-//            } else {
-//                return Optional.of(ResponseBase.errorNotFound("Evento no encontrado"));
-//            }
-//        } catch (Exception e) {
-//            return Optional.of(ResponseBase.errorNotFound("Error al buscar el evento"));
-//        }
-//    }
-
-
-
     @Override
     public Optional<ResponseBase> deleteById(Long id) {
         try {
@@ -152,5 +136,7 @@ public class EventoSericeImpl implements EventoService {
             return Optional.of(ResponseBase.errorInternalSErverError("Error al eliminar el evento"));
         }
     }
+
+
 
 }
