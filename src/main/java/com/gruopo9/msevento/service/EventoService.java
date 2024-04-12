@@ -11,7 +11,7 @@ public interface EventoService {
 
     ResponseBase listaEvento();
 
-    Optional<ResponseBase> findById(Long id);
+    Optional<EventoEntity> findById(Long id);
     //ResponseBase<EventoEntity> findById(Long id);
 
     ResponseBase update(Long id, EventoEntity eventoActualizado);

@@ -1,4 +1,4 @@
-package com.gruopo9.msevento.service.dto;
+package com.gruopo9.msevento.model;
 
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-public class UsuarioDTO {
+public class Usuario {
 
     private Long idUsuario;
 
@@ -36,5 +36,5 @@ public class UsuarioDTO {
     @JoinTable(name = "usuario_rol",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_rol"))
-    private Set<RolDTO> roles = new HashSet<>();
+    private Set<Rol> roles = new HashSet<>();
 }

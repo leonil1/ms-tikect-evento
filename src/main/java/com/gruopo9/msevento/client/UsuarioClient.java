@@ -1,5 +1,5 @@
 package com.gruopo9.msevento.client;
-import com.gruopo9.msevento.service.dto.UsuarioDTO;
+import com.gruopo9.msevento.model.Usuario;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "ms-security")
 public interface UsuarioClient {
     @GetMapping("/api/v1/autenticacion/usuarioautenticado")
-    UsuarioDTO getUsuarioAutenticado(@RequestHeader("Authorization") String token);
+    Usuario getUsuarioAutenticado(@RequestHeader("Authorization") String token);
 }

@@ -10,16 +10,13 @@ import com.gruopo9.msevento.repository.EventoRepository;
 
 import com.gruopo9.msevento.repository.SectorAsientoRepository;
 import com.gruopo9.msevento.service.EventoService;
-import com.gruopo9.msevento.service.dto.UsuarioDTO;
+import com.gruopo9.msevento.model.Usuario;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +39,7 @@ public class EventoSericeImpl implements EventoService {
     public ResponseBase save(EventoEntity evento) {
         try {
             String token = request.getHeader("Authorization");
-            UsuarioDTO usuarioDTO = usuarioClient.getUsuarioAutenticado(token);
+            Usuario usuarioDTO = usuarioClient.getUsuarioAutenticado(token);
             evento.setUserCreate(usuarioDTO.getUsername());
             eventoRepository.save(evento);
             return ResponseBase.exitoso("Evento creado correctamente", Optional.of(evento.getId()));
@@ -58,7 +55,7 @@ public class EventoSericeImpl implements EventoService {
     public ResponseBase update(Long id, EventoEntity eventoActualizado) {
         try {
             String token = request.getHeader("Authorization");
-            UsuarioDTO usuarioDTO = usuarioClient.getUsuarioAutenticado(token);
+            Usuario usuarioDTO = usuarioClient.getUsuarioAutenticado(token);
 
             EventoEntity eventoExistente = eventoRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Evento no encontrado con ID: " + id));
@@ -110,11 +107,6 @@ public class EventoSericeImpl implements EventoService {
     }
 
 
-//    @Override
-//    public List<EventoEntity> listaEvento() {
-//        return eventoRepository.findAll();
-//    }
-
     @Override
     public ResponseBase listaEvento() {
         try {
@@ -125,20 +117,25 @@ public class EventoSericeImpl implements EventoService {
         }
     }
 
-
     @Override
-    public Optional<ResponseBase> findById(Long id) {
-        try {
-            Optional<EventoEntity> evento = eventoRepository.findById(id);
-            if (evento.isPresent()) {
-                return Optional.of(ResponseBase.exitoso("Evento encontrado", evento.get()));
-            } else {
-                return Optional.of(ResponseBase.errorNotFound("Evento no encontrado"));
-            }
-        } catch (Exception e) {
-            return Optional.of(ResponseBase.errorNotFound("Error al buscar el evento"));
-        }
+    public Optional<EventoEntity> findById(Long id) {
+        return eventoRepository.findById(id);
     }
+
+
+//    @Override
+//    public Optional<ResponseBase> findById(Long id) {
+//        try {
+//            Optional<EventoEntity> evento = eventoRepository.findById(id);
+//            if (evento.isPresent()) {
+//                return Optional.of(ResponseBase.exitoso("Evento encontrado", evento.get()));
+//            } else {
+//                return Optional.of(ResponseBase.errorNotFound("Evento no encontrado"));
+//            }
+//        } catch (Exception e) {
+//            return Optional.of(ResponseBase.errorNotFound("Error al buscar el evento"));
+//        }
+//    }
 
 
 

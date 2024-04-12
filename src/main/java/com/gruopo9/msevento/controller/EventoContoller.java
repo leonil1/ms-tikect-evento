@@ -28,16 +28,10 @@ public class EventoContoller {
         ResponseBase response = eventoService.save(evento);
         return response;
     }
-
     @GetMapping("/obtener/{id}")
-    public ResponseBase obtenerEvento(@PathVariable Long id) {
-        Optional<ResponseBase> evento = eventoService.findById(id);
+    public Optional<EventoEntity> obtenerEventoId(@PathVariable Long id){
+        return eventoService.findById(id);
 
-        if (evento.isPresent()) {
-            return evento.get();
-        } else {
-            return ResponseBase.errorNotFound("Evento no encontrado");
-        }
     }
 
     @GetMapping("/todos")
@@ -61,38 +55,12 @@ public class EventoContoller {
     }
 
 
-    //actualizar asiento
-//    @PutMapping("/asiento/{id}/estado")
-//    public ResponseBase cambiarEstadoAsiento(@PathVariable Long id, @RequestParam int numeroAsiento, @RequestParam boolean estado) {
-//        try {
-//            Optional<ResponseBase> optionalEvento = eventoService.findById(id);
-//            if (optionalEvento.isPresent()) {
-//                EventoEntity evento = optionalEvento.get();
-//                List<SectorAsientoEntity> sectores = evento.getSector();
-//                for (SectorAsientoEntity sector : sectores) {
-//                    List<AsientoEntity> asientos = sector.getAsientos();
-//                    for (AsientoEntity asiento : asientos) {
-//                        if (asiento.getNumeroAsiento() == numeroAsiento) {
-//                            asiento.setEstado(estado);
-//                            asientoService.save(asiento);
-//                            return ResponseBase.exitoso("Estado de asiento actualizado", asiento);
-//                        }
-//                    }
-//                }
-//            }
-//            return ResponseBase.errorNotFound("Asiento no encontrado");
-//        } catch (Exception e) {
-//            return ResponseBase.errorInternalSErverError("Error al cambiar estado de asiento");
-//        }
-//    }
-
-    //actualizar asiento
     @PutMapping("/asiento/{id}/estado")
     public ResponseBase cambiarEstadoAsiento(@PathVariable Long id, @RequestParam int numeroAsiento, @RequestParam boolean estado) {
         try {
-            Optional<ResponseBase> optionalEvento = eventoService.findById(id);
+            Optional<EventoEntity> optionalEvento = eventoService.findById(id);
             if (optionalEvento.isPresent()) {
-                EventoEntity evento = (EventoEntity) optionalEvento.get().getData().orElse(null);
+                EventoEntity evento = optionalEvento.get();
                 List<SectorAsientoEntity> sectores = evento.getSector();
                 for (SectorAsientoEntity sector : sectores) {
                     List<AsientoEntity> asientos = sector.getAsientos();
@@ -110,8 +78,6 @@ public class EventoContoller {
             return ResponseBase.errorInternalSErverError("Error al cambiar estado de asiento");
         }
     }
-
-
 
     //obtenet asiento
     @PutMapping("/asiento/form/{id}")
