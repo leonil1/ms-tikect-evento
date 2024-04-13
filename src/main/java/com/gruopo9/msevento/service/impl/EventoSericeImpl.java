@@ -15,6 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -112,6 +114,14 @@ public class EventoSericeImpl implements EventoService {
         try {
             List<EventoEntity> eventos = eventoRepository.findAll();
             return ResponseBase.exitoso("Lista de eventos obtenida con éxito", eventos);
+        } catch (Exception e) {
+            return ResponseBase.errorInternalSErverError("Error al obtener la lista de eventos");
+        }
+    }
+    public ResponseBase listaEvento(Pageable pageable) {
+        try {
+            Page<EventoEntity> eventosPage = eventoRepository.findAll(pageable);
+            return ResponseBase.exitoso("Lista de eventos obtenida con éxito", eventosPage);
         } catch (Exception e) {
             return ResponseBase.errorInternalSErverError("Error al obtener la lista de eventos");
         }
